@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Anton } from 'next/font/google'
 import './globals.css'
+
 import Header from '@/components/Header'
 
 const inter = Inter({
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${inter.variable} ${anton.variable} font-sans bg-gray-900 text-white`}
+        className={`${inter.variable} ${anton.variable} bg-gray-900 font-sans text-white`}
       >
         <Header />
         {children}

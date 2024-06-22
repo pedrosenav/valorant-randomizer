@@ -1,7 +1,8 @@
 'use client'
 
 import Container from '@/components/Container'
-import { pickRandomNumber } from '@/lib/utils'
+import { Card } from '@/components/ui/card'
+import { pickRandomItem } from '@/lib/utils'
 import { Shuffle } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
@@ -9,6 +10,9 @@ import { useState, useEffect } from 'react'
 interface MapAPIResponse {
   displayName: string
   splash: string
+  displayIcon: string
+  tacticalDescription: null | string
+  coordinates: string
 }
 
 export default function Home() {
@@ -19,9 +23,11 @@ export default function Home() {
   useEffect(() => {
     fetch('https://valorant-api.com/v1/maps')
       .then((res) => res.json())
+      .then((res) =>
+        res.data.filter((map: MapAPIResponse) => !!map.coordinates),
+      )
       .then((data) => {
-        console.log(data)
-        setMaps(data.data)
+        setMaps(data)
       })
       .catch((err) => console.log(err))
   }, [])
@@ -29,32 +35,60 @@ export default function Home() {
   // Helper Functions
 
   function pickRandomMap() {
-    return setRandomMap(maps[pickRandomNumber(0, maps.length - 1)])
+    return setRandomMap(pickRandomItem(maps))
   }
 
   // JSX Return
   return (
     <div>
-      <Container className="py-5 flex flex-col items-center gap-5">
-        <div className="min-w-full aspect-video bg-gray-800 rounded border-4 border-white flex items-center justify-center relative">
-          <h1 className="font-alt uppercase tracking-wide text-9xl z-20">
-            {randomMap?.displayName}
-          </h1>
+      <Container className="space-y-10 py-10">
+        {/* Título */}
+        <h1 className="text-center font-alt text-8xl tracking-wide">MAPA</h1>
+
+        {/* Mapa */}
+        <Card
+          onClick={pickRandomMap}
+          className="relative flex h-96 items-center justify-center overflow-hidden bg-gray-800"
+        >
+          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer text-xl font-semibold text-white">
+            CLIQUE PARA SORTEAR
+          </p>
+          <Shuffle
+            size={100}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white opacity-5"
+          />
+
+          {/* Map Title */}
+          <div className="z-30 text-center">
+            <h2 className="font-alt text-9xl uppercase tracking-wide text-white">
+              {randomMap?.displayName}
+            </h2>
+            <p className="tracking-widest text-white">
+              {randomMap?.coordinates}
+            </p>
+          </div>
+
+          {/* Map Image */}
           <Image
-            className="w-full h-full absolute brightness-50"
-            width={800}
-            height={800}
+            className="absolute z-20 h-max w-full translate-x-1/4 opacity-10"
+            width={1500}
+            height={1500}
+            loading="eager"
+            draggable={false}
+            src={randomMap?.displayIcon ?? ''}
+            alt={randomMap?.displayName ?? ''}
+          />
+
+          <Image
+            className="absolute h-max w-full brightness-50"
+            width={1500}
+            height={1500}
+            loading="eager"
+            draggable={false}
             src={randomMap?.splash ?? ''}
             alt={randomMap?.displayName ?? ''}
           />
-        </div>
-        <button
-          className="bg-emerald-500 font-semibold py-3 px-5 rounded text-xl hover:bg-emerald-600 flex gap-2 items-center"
-          onClick={pickRandomMap}
-        >
-          Sortear
-          <Shuffle size={20} strokeWidth={3} />
-        </button>
+        </Card>
       </Container>
     </div>
   )

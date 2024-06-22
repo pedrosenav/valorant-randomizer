@@ -1,24 +1,36 @@
+'use client'
+
 import Link from 'next/link'
 import Container from '@/components/Container'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 export default function Header() {
+  const pathname = usePathname()
+
+  const routes = [
+    { name: 'PARTIDA', url: '/' },
+    { name: 'MAPA', url: '/map' },
+    { name: 'AGENTE', url: '/agent' },
+  ]
+
   return (
-    <header className="bg-rose-600 sticky top-0 py-4">
+    <header className="sticky top-0 z-50 bg-rose-600 py-4">
       <Container>
         <nav>
-          <ul className="flex gap-5">
-            <Link
-              href="/map"
-              className="py-1 px-2.5 font-semibold rounded hover:bg-rose-700"
-            >
-              <li>Mapa</li>
-            </Link>
-            <Link
-              href="/"
-              className="py-1 px-2.5 font-semibold rounded hover:bg-rose-700"
-            >
-              <li>Agentes</li>
-            </Link>
+          <ul className="flex justify-center gap-5">
+            {routes.map((route) => (
+              <Link
+                href={route.url}
+                key={route.url}
+                className={cn(
+                  `rounded px-3 py-1.5 font-semibold hover:bg-rose-700`,
+                  route.url === pathname && 'bg-rose-700',
+                )}
+              >
+                <li>{route.name}</li>
+              </Link>
+            ))}
           </ul>
         </nav>
       </Container>
