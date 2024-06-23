@@ -18,7 +18,7 @@ import { z } from 'zod'
 import Image from 'next/image'
 import { Shuffle } from 'lucide-react'
 
-interface AgentsAPIResponse {
+export interface AgentAPIResponse {
   displayName: string
   displayIcon: string
   bustPortrait: string
@@ -38,17 +38,15 @@ type ClassesSchema = z.infer<typeof formSchema>
 
 export default function Home() {
   // Variables and State
-  const [agents, setAgents] = useState<AgentsAPIResponse[]>([])
-  const [randomAgent, setRandomAgent] = useState<AgentsAPIResponse>()
-  const [agentsHistory, setAgentsHistory] = useState<AgentsAPIResponse[]>([])
+  const [agents, setAgents] = useState<AgentAPIResponse[]>([])
+  const [randomAgent, setRandomAgent] = useState<AgentAPIResponse>()
+  const [agentsHistory, setAgentsHistory] = useState<AgentAPIResponse[]>([])
 
   useEffect(() => {
     fetch('https://valorant-api.com/v1/agents')
       .then((res) => res.json())
       .then((res) =>
-        res.data.filter(
-          (agent: AgentsAPIResponse) => agent.isPlayableCharacter,
-        ),
+        res.data.filter((agent: AgentAPIResponse) => agent.isPlayableCharacter),
       )
       .then((data) => setAgents(data))
       .catch((err) => console.log(err))
@@ -96,7 +94,7 @@ export default function Home() {
     <div>
       <Container className="space-y-10 py-10">
         {/* Título */}
-        <h1 className="text-center font-alt text-8xl tracking-wide">AGENTES</h1>
+        <h1 className="text-center font-alt text-8xl tracking-wide">AGENTE</h1>
 
         {/* Sorteador */}
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -203,7 +201,7 @@ export default function Home() {
                   loading="eager"
                   width={1500}
                   height={1500}
-                  className="z-20 w-max scale-150 pt-5"
+                  className="z-20 w-max scale-125"
                 />
 
                 {/* Background Image */}
@@ -223,11 +221,11 @@ export default function Home() {
         {/* Histórico */}
         <Card className="h-24 bg-gray-800 p-2.5">
           <ScrollArea>
-            <div className="flex flex-row-reverse justify-end gap-5 p-2.5 pb-5">
+            <div className="relative flex flex-row-reverse justify-end gap-5 p-2.5 pb-5">
               {agentsHistory.map((agent, i) => (
                 <TooltipProvider key={agent?.displayName + i}>
                   <Tooltip>
-                    <TooltipTrigger className="shrink-0 cursor-default rounded border border-transparent saturate-0 transition-all hover:border-gray-400 hover:saturate-100">
+                    <TooltipTrigger className="group shrink-0 cursor-default rounded border border-transparent saturate-0 transition-all hover:border-gray-400 hover:saturate-100">
                       <Image
                         src={agent?.displayIcon}
                         alt={agent?.displayName}
@@ -236,6 +234,9 @@ export default function Home() {
                         width={45}
                         height={45}
                       />
+                      <p className="p-1 text-xs text-gray-500 transition-colors group-hover:text-white">
+                        {i + 1}
+                      </p>
                     </TooltipTrigger>
                     <TooltipContent className="bg-gray-800 px-2 py-1 text-white">
                       {agent?.displayName}

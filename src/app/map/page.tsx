@@ -7,10 +7,11 @@ import { Shuffle } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
-interface MapAPIResponse {
+export interface MapAPIResponse {
   displayName: string
   splash: string
   displayIcon: string
+  listViewIconTall: string
   tacticalDescription: null | string
   coordinates: string
 }
@@ -24,7 +25,7 @@ export default function Home() {
     fetch('https://valorant-api.com/v1/maps')
       .then((res) => res.json())
       .then((res) =>
-        res.data.filter((map: MapAPIResponse) => !!map.coordinates),
+        res.data.filter((map: MapAPIResponse) => !!map.tacticalDescription),
       )
       .then((data) => {
         setMaps(data)
@@ -48,7 +49,7 @@ export default function Home() {
         {/* Mapa */}
         <Card
           onClick={pickRandomMap}
-          className="relative flex h-96 items-center justify-center overflow-hidden bg-gray-800"
+          className="relative flex h-96 cursor-pointer items-center justify-center overflow-hidden bg-gray-800"
         >
           <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer text-xl font-semibold text-white">
             CLIQUE PARA SORTEAR
