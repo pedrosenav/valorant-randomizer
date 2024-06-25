@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import PlayerBanner from '@/components/PlayerBanner'
 
-import { cn, pickRandomItem, shuffleArray } from '@/lib/utils'
+import { cn, pickRandomItem, shuffleArray, theRangeImage } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -75,7 +75,7 @@ export default function Home() {
 
   // Helper Functions
 
-  function matchToClipboard() {
+  function copyMatch() {
     const attack = matchSettings?.attack
       .map((player) => `${player.name}: **${player.agent.displayName}**\n`)
       .toString()
@@ -86,9 +86,9 @@ export default function Home() {
       .toString()
       .replaceAll(',', '')
 
-    const message = `MAPA: **${matchSettings?.map.displayName}**\n \n--- Ataque ---\n${attack} \n--- Defesa ---\n${defense}`
+    const matchText = `MAPA: **${matchSettings?.map.displayName}**\n \n—— Ataque ——\n${attack} \n—— Defesa ——\n${defense}`
 
-    navigator.clipboard.writeText(message)
+    navigator.clipboard.writeText(matchText)
   }
 
   function assignAgents(players: string[]) {
@@ -96,10 +96,6 @@ export default function Home() {
       name: player,
       agent: pickRandomItem(agents),
     }))
-  }
-
-  function pickRandomMap() {
-    return pickRandomItem(maps)
   }
 
   function onSubmit(values: ClassesSchema) {
@@ -114,7 +110,7 @@ export default function Home() {
     setMatchSettings({
       attack: assignAgents(attackTeam),
       defense: assignAgents(defenseTeam),
-      map: pickRandomMap(),
+      map: pickRandomItem(maps),
     })
 
     console.log('Errors:', errors)
@@ -166,15 +162,14 @@ export default function Home() {
 
         {/* Exibição da Partida */}
         <Card
-          className={cn('flex justify-between gap-10 bg-gray-800 p-10', {
-            hidden: !matchSettings,
-          })}
+          className={cn(
+            'relative flex flex-col justify-between gap-10 overflow-hidden bg-gray-800 p-10 lg:flex-row',
+            !matchSettings && 'hidden',
+          )}
         >
           {/* Time Atacando */}
-          <div className="flex-1 space-y-5">
-            <h3 className="text-center text-4xl tracking-widest text-gray-400">
-              ATAQUE
-            </h3>
+          <div className="z-30 flex flex-1 flex-col items-center gap-5">
+            <h3 className="text-4xl tracking-widest text-gray-400">ATAQUE</h3>
 
             {matchSettings?.attack.map((player) => (
               <PlayerBanner
@@ -187,38 +182,26 @@ export default function Home() {
           </div>
 
           {/* Central */}
-          <div className="flex flex-1 flex-col gap-2.5">
+          <div className="z-30 order-1 flex min-h-64 flex-1 flex-col items-center justify-center gap-5 text-center lg:order-none">
             {/* Mapa */}
-            <div className="relative flex min-h-64 flex-1 flex-col items-center justify-center overflow-hidden rounded-lg">
+            <div className="space-y-2.5">
               <h3 className="z-30 font-alt text-7xl uppercase text-white">
                 {matchSettings?.map.displayName}
               </h3>
               <p className="z-30 text-sm tracking-widest text-gray-400">
                 {matchSettings?.map.coordinates}
               </p>
-              <Image
-                src={
-                  matchSettings?.map.listViewIconTall ??
-                  'https://media.valorant-api.com/maps/ee613ee9-28b7-4beb-9666-08db13bb2244/listviewicontall.png'
-                }
-                alt={matchSettings?.map.displayName ?? 'Map image'}
-                draggable={false}
-                className="absolute left-0 top-0 z-10 h-full max-w-full object-cover opacity-80 brightness-50"
-                width={500}
-                height={500}
-              />
             </div>
 
-            <Button onClick={matchToClipboard} className="gap-2">
-              Copiar <Copy size={16} />
+            <Button onClick={copyMatch} className="gap-2">
+              <Copy size={16} />
+              Copiar
             </Button>
           </div>
 
           {/* Time Defendendo */}
-          <div className="flex-1 space-y-5">
-            <h3 className="text-center text-4xl tracking-widest text-gray-400">
-              DEFESA
-            </h3>
+          <div className="z-30 flex flex-1 flex-col items-center gap-5">
+            <h3 className="text-4xl tracking-widest text-gray-400">DEFESA</h3>
 
             {matchSettings?.defense.map((player) => (
               <PlayerBanner
@@ -229,6 +212,15 @@ export default function Home() {
               />
             ))}
           </div>
+
+          <Image
+            src={matchSettings?.map.splash ?? theRangeImage}
+            alt={matchSettings?.map.displayName ?? 'Map image'}
+            draggable={false}
+            className="absolute left-0 top-0 z-10 h-full w-full object-cover opacity-70 brightness-50"
+            width={500}
+            height={500}
+          />
         </Card>
       </Container>
     </div>

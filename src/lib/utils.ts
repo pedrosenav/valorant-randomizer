@@ -9,9 +9,8 @@ export function pickRandomItem<T>(array: T[]) {
   const min = 0
   const max = array.length - 1
 
-  if (min > max) {
-    throw new Error('Tá errado patrão')
-  }
+  if (min > max) throw new Error('Tá errado patrão')
+
   const randomNum = Math.floor(Math.random() * (max - min + 1)) + min
 
   return array[randomNum]
@@ -25,3 +24,6 @@ export function shuffleArray<T>(array: T[]): T[] {
   }
   return shuffledArray
 }
+
+export const theRangeImage =
+  'https://media.valorant-api.com/maps/ee613ee9-28b7-4beb-9666-08db13bb2244/listviewicontall.png'

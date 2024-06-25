@@ -18,7 +18,7 @@ const anton = Anton({
 })
 
 export const metadata: Metadata = {
-  title: 'Sorteador Valorant',
+  title: 'Valorant Randomizer',
 }
 
 export default function RootLayout({

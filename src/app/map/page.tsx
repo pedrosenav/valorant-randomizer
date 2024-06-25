@@ -2,7 +2,7 @@
 
 import Container from '@/components/Container'
 import { Card } from '@/components/ui/card'
-import { pickRandomItem } from '@/lib/utils'
+import { cn, pickRandomItem, theRangeImage } from '@/lib/utils'
 import { Shuffle } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
@@ -49,7 +49,7 @@ export default function Home() {
         {/* Mapa */}
         <Card
           onClick={pickRandomMap}
-          className="relative flex h-96 cursor-pointer items-center justify-center overflow-hidden bg-gray-800"
+          className="relative flex h-96 cursor-pointer items-center justify-center overflow-hidden bg-gray-800 shadow-lg"
         >
           <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer text-xl font-semibold text-white">
             CLIQUE PARA SORTEAR
@@ -61,7 +61,7 @@ export default function Home() {
 
           {/* Map Title */}
           <div className="z-30 text-center">
-            <h2 className="font-alt text-9xl uppercase tracking-wide text-white">
+            <h2 className="font-alt text-7xl uppercase tracking-wide text-white sm:text-9xl">
               {randomMap?.displayName}
             </h2>
             <p className="tracking-widest text-white">
@@ -71,23 +71,30 @@ export default function Home() {
 
           {/* Map Image */}
           <Image
-            className="absolute z-20 h-max w-full translate-x-1/4 opacity-10"
+            className={cn(
+              'absolute z-20 h-max w-full translate-x-1/4 opacity-10',
+              !randomMap && 'hidden',
+            )}
             width={1500}
             height={1500}
             loading="eager"
             draggable={false}
-            src={randomMap?.displayIcon ?? ''}
-            alt={randomMap?.displayName ?? ''}
+            src={randomMap?.displayIcon ?? theRangeImage}
+            alt={randomMap?.displayName ?? theRangeImage}
           />
 
+          {/* Map Background */}
           <Image
-            className="absolute h-max w-full brightness-50"
+            className={cn(
+              'absolute h-full object-cover brightness-50',
+              !randomMap && 'hidden',
+            )}
             width={1500}
             height={1500}
             loading="eager"
             draggable={false}
-            src={randomMap?.splash ?? ''}
-            alt={randomMap?.displayName ?? ''}
+            src={randomMap?.splash ?? theRangeImage}
+            alt={randomMap?.displayName ?? theRangeImage}
           />
         </Card>
       </Container>

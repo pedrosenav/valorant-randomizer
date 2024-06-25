@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Container from '@/components/Container'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { Button } from './ui/button'
 
 export default function Header() {
   const pathname = usePathname()
@@ -20,16 +21,16 @@ export default function Header() {
         <nav>
           <ul className="flex justify-center gap-5">
             {routes.map((route) => (
-              <Link
-                href={route.url}
+              <Button
                 key={route.url}
-                className={cn(
-                  `rounded px-3 py-1.5 font-semibold hover:bg-rose-700`,
-                  route.url === pathname && 'bg-rose-700',
-                )}
+                className={cn('bg-rose-600 hover:bg-rose-700', {
+                  'bg-rose-700': route.url === pathname,
+                })}
               >
-                <li>{route.name}</li>
-              </Link>
+                <Link href={route.url}>
+                  <li>{route.name}</li>
+                </Link>
+              </Button>
             ))}
           </ul>
         </nav>
