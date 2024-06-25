@@ -17,7 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Image from 'next/image'
 import { Shuffle } from 'lucide-react'
-import AgentFilter from '@/components/AgentFIlter'
+import AgentFilter from '@/components/AgentFilter'
 
 export interface AgentAPIResponse {
   displayName: string
