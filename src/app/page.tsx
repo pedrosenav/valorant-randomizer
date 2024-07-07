@@ -99,13 +99,12 @@ export default function Home() {
   }
 
   function onSubmit(values: ClassesSchema) {
-    const players = values.names.toUpperCase().split(/\s*,\s*/) // Transforma a string em um array com os nomes
-    const shuffledPlayers = shuffleArray(players) // Embaralha os nomes
-
-    const divider = Math.floor(shuffledPlayers.length / 2) // Marco da metade do array para separar os times
+    const players = values.names.toUpperCase().split(/\s*,\s*/) // Convert string to array
+    const shuffledPlayers = shuffleArray(players) // Shuffle the names
+    const divider = Math.floor(shuffledPlayers.length / 2) // Array midpoint
 
     const defenseTeam = shuffledPlayers.slice(0, divider)
-    const attackTeam = shuffledPlayers.slice(divider, shuffledPlayers.length) // Em caso de ímpar, o ataque sempre terá mais jogadores
+    const attackTeam = shuffledPlayers.slice(divider, shuffledPlayers.length) // If player count is odd, attacking team gets more players
 
     setMatchSettings({
       attack: assignAgents(attackTeam),
@@ -120,36 +119,21 @@ export default function Home() {
   return (
     <div>
       <Container className="space-y-10 py-10">
-        {/* Título */}
+        {/* Title */}
         <h1 className="text-center font-alt text-8xl tracking-wide">PARTIDA</h1>
 
-        {/* Formulário */}
+        {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="mx-auto max-w-2xl space-y-5"
         >
           <div className="flex gap-5">
-            {/* Nomes */}
+            {/* Names */}
             <Textarea
               className="text-md max-h-36 min-h-36 p-5 text-gray-900"
               placeholder="Escreva aqui os nomes separados por vírgula..."
               {...register('names', { required: true })}
             />
-
-            {/* Filtros */}
-            {/* <div className="flex min-w-36 flex-col">
-              <h2 className="text-2xl font-semibold">FILTROS</h2>
-
-              <label>
-                <input type="checkbox" />
-                AGENTES
-              </label>
-
-              <label>
-                <input type="checkbox" />
-                MAPA
-              </label>
-            </div> */}
           </div>
 
           <Button
@@ -160,14 +144,14 @@ export default function Home() {
           </Button>
         </form>
 
-        {/* Exibição da Partida */}
+        {/* Match Display */}
         <Card
           className={cn(
             'relative flex flex-col justify-between gap-10 overflow-hidden bg-gray-800 p-10 lg:flex-row',
             !matchSettings && 'hidden',
           )}
         >
-          {/* Time Atacando */}
+          {/* Attacking Team */}
           <div className="z-30 flex flex-1 flex-col items-center gap-5">
             <h3 className="text-4xl tracking-widest text-gray-400">ATAQUE</h3>
 
@@ -183,7 +167,7 @@ export default function Home() {
 
           {/* Central */}
           <div className="z-30 order-1 flex min-h-64 flex-1 flex-col items-center justify-center gap-5 text-center lg:order-none">
-            {/* Mapa */}
+            {/* Map */}
             <div className="space-y-2.5">
               <h3 className="z-30 font-alt text-7xl uppercase text-white">
                 {matchSettings?.map.displayName}
@@ -199,7 +183,7 @@ export default function Home() {
             </Button>
           </div>
 
-          {/* Time Defendendo */}
+          {/* Defending Team */}
           <div className="z-30 flex flex-1 flex-col items-center gap-5">
             <h3 className="text-4xl tracking-widest text-gray-400">DEFESA</h3>
 

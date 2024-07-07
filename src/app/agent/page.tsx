@@ -19,16 +19,20 @@ import Image from 'next/image'
 import { Shuffle } from 'lucide-react'
 import AgentFilter from '@/components/AgentFilter'
 
+export interface Role {
+  displayName: string
+  displayIcon: string
+}
+
 export interface AgentAPIResponse {
   displayName: string
   displayIcon: string
   bustPortrait: string
   background: string
+  description: string
   isPlayableCharacter: boolean
-  role: {
-    displayName: string
-    displayIcon: string
-  }
+  role: Role
+  backgroundGradientColors: string[]
 }
 
 const formSchema = z.object({
@@ -86,29 +90,44 @@ export default function Home() {
     setAgentsHistory((agents) => [...agents, pickedAgent])
   }
 
+  const roles: Role[] = []
+
+  for (let i = 0; i < agents.length; i++) {
+    const role = agents[i].role
+    const roleNames = roles.map((role) => role.displayName)
+
+    if (!roleNames.includes(role.displayName)) {
+      roles.push(role)
+    }
+  }
+
   // JSX Return
   return (
     <div>
       <Container className="space-y-10 py-10">
-        {/* Título */}
+        {/* Title */}
         <h1 className="text-center font-alt text-8xl tracking-wide">AGENTE</h1>
 
-        {/* Sorteador */}
+        {/* Randomizer */}
         <FormProvider {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-5"
           >
-            {/* Filtros */}
+            {/* Filters */}
             <div className="flex flex-wrap items-center justify-center gap-5">
-              <AgentFilter roleId="Controller" roleName="Controlador" />
-              <AgentFilter roleId="Sentinel" roleName="Sentinel" />
-              <AgentFilter roleId="Initiator" roleName="Iniciador" />
-              <AgentFilter roleId="Duelist" roleName="Duelista" />
+              {roles.map((role) => (
+                <AgentFilter role={role} key={role.displayName} />
+              ))}
             </div>
 
-            {/* Agentes */}
-            <Card className="relative flex h-96 flex-col items-start justify-start gap-5 overflow-hidden bg-gray-800 shadow-lg">
+            {/* Agents */}
+            <Card
+              className="relative flex h-96 flex-col items-start justify-start gap-5 overflow-hidden bg-gray-800 shadow-lg"
+              style={{
+                background: `linear-gradient(60deg, #${randomAgent?.backgroundGradientColors[1]} -100%, transparent 50%)`,
+              }}
+            >
               <input
                 type="submit"
                 value={'CLIQUE PARA SORTEAR'}
@@ -128,16 +147,31 @@ export default function Home() {
               {randomAgent && (
                 <>
                   <div className="absolute left-0 top-1/2 z-30 space-y-2 p-5">
-                    <div className="absolute h-96 w-10 -translate-y-full bg-emerald-500"></div>
+                    {/* Stripe */}
+                    <div
+                      className="absolute h-96 w-10 -translate-y-full transition-colors duration-500"
+                      style={{
+                        backgroundColor: `#${randomAgent?.backgroundGradientColors[0]}`,
+                      }}
+                    ></div>
+
                     {/* Role Name */}
                     <h3 className="text-xl uppercase tracking-widest text-gray-400">
                       {randomAgent?.role.displayName}
                     </h3>
+
                     {/* Agent Name */}
                     <h2 className="font-alt text-7xl uppercase tracking-wide text-white">
                       {randomAgent?.displayName}
                     </h2>
-                    <div className="absolute h-96 w-10 bg-emerald-500"></div>
+
+                    {/* Stripe */}
+                    <div
+                      className="absolute h-96 w-10 transition-colors duration-500"
+                      style={{
+                        backgroundColor: `#${randomAgent?.backgroundGradientColors[0]}`,
+                      }}
+                    ></div>
                   </div>
 
                   {/* Agent Image */}
@@ -160,15 +194,21 @@ export default function Home() {
                     className="absolute right-0 top-1/2 z-10 h-fit w-fit -translate-y-1/2 opacity-20"
                   />
 
+                  {/* Description */}
+                  <p className="absolute left-1/3 top-1/2 z-10 hidden h-full max-w-80 -translate-x-1/2 -translate-y-1/2 p-10 leading-snug tracking-widest text-white/10 lg:block">
+                    <p className="mb-5 h-1 w-3 bg-white/10"></p>
+                    &quot;{randomAgent.description}&quot;
+                  </p>
+
                   {/* Role Icon */}
-                  <Image
+                  {/* <Image
                     src={randomAgent?.role.displayIcon}
                     alt={randomAgent?.role.displayName + 'background'}
                     loading="eager"
                     width={300}
                     height={300}
                     className="absolute left-1/3 top-1/2 z-10 h-full w-fit -translate-x-1/2 -translate-y-1/2 p-10 opacity-5"
-                  />
+                  /> */}
                 </>
               )}
             </Card>
@@ -176,7 +216,7 @@ export default function Home() {
         </FormProvider>
 
         <div className="flex gap-2.5">
-          {/* Histórico */}
+          {/* Historic */}
           <Card className="h-24 w-full bg-gray-800 p-2.5 shadow-lg">
             <ScrollArea>
               <div className="relative flex flex-row-reverse justify-end gap-5 p-2.5 pb-5">

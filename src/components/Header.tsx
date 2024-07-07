@@ -21,16 +21,16 @@ export default function Header() {
         <nav>
           <ul className="flex justify-center gap-5">
             {routes.map((route) => (
-              <Button
-                key={route.url}
-                className={cn('bg-rose-600 hover:bg-rose-700', {
-                  'bg-rose-700': route.url === pathname,
-                })}
-              >
-                <Link href={route.url}>
+              <Link href={route.url} key={route.url}>
+                <Button
+                  tabIndex={-1}
+                  className={cn('bg-rose-600 hover:bg-rose-700', {
+                    'bg-rose-700': route.url === pathname,
+                  })}
+                >
                   <li>{route.name}</li>
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             ))}
           </ul>
         </nav>
