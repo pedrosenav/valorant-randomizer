@@ -17,7 +17,7 @@ import Image from 'next/image'
 import type { MapAPIResponse } from '@/app/map/page'
 
 import type { AgentAPIResponse } from '@/app/agent/page'
-import { Copy } from 'lucide-react'
+import { Copy, CopyCheck } from 'lucide-react'
 
 export type Player = { name: string; agent: AgentAPIResponse }
 
@@ -36,10 +36,11 @@ type ClassesSchema = z.infer<typeof formSchema>
 export default function Home() {
   // State and Variables
   const [agents, setAgents] = useState<AgentAPIResponse[]>([])
-
   const [maps, setMaps] = useState<MapAPIResponse[]>([])
-
   const [matchSettings, setMatchSettings] = useState<MatchSettings>()
+
+  const [hasCopied, setHasCopied] = useState(false)
+  const [warning, setWarning] = useState<string | null>(null)
 
   useEffect(() => {
     // Fetch Maps
@@ -89,6 +90,9 @@ export default function Home() {
     const matchText = `MAPA: **${matchSettings?.map.displayName}**\n \n—— Ataque ——\n${attack} \n—— Defesa ——\n${defense}`
 
     navigator.clipboard.writeText(matchText)
+
+    setHasCopied(true)
+    setTimeout(() => setHasCopied(false), 1500)
   }
 
   function assignAgents(players: string[]) {
@@ -100,6 +104,13 @@ export default function Home() {
 
   function onSubmit(values: ClassesSchema) {
     const players = values.names.toUpperCase().split(/\s*,\s*/) // Convert string to array
+
+    if (players.length < 2) {
+      setWarning('MÍNIMO DE 2 JOGADORES')
+      return
+    }
+    setWarning(null)
+
     const shuffledPlayers = shuffleArray(players) // Shuffle the names
     const divider = Math.floor(shuffledPlayers.length / 2) // Array midpoint
 
@@ -112,7 +123,9 @@ export default function Home() {
       map: pickRandomItem(maps),
     })
 
-    console.log('Errors:', errors)
+    new Audio('match-found.mp3').play()
+
+    console.log('Errors on Submit:', errors)
   }
 
   // JSX Return
@@ -128,23 +141,29 @@ export default function Home() {
           className="mx-auto max-w-2xl space-y-5"
         >
           <div className="flex gap-5">
-            {/* Names */}
+            {/* TODO: Add input verification */}
+            {/* Player Names */}
             <Textarea
               className="text-md max-h-36 min-h-36 p-5 text-gray-900"
               placeholder="Escreva aqui os nomes separados por vírgula..."
-              {...register('names', { required: true })}
+              {...register('names')}
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-500"
+            className={cn(
+              'w-full bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-500',
+              warning && 'bg-rose-500 hover:bg-rose-600 active:bg-rose-500',
+            )}
           >
-            SORTEAR
+            {warning || 'SORTEAR'}
           </Button>
         </form>
 
         {/* Match Display */}
+        {/* TODO: Add animations inspired in the game match found */}
+        {/* TODO: Option to reroll an agent */}
         <Card
           className={cn(
             'relative flex flex-col justify-between gap-10 overflow-hidden bg-gray-800 p-10 lg:flex-row',
@@ -177,9 +196,25 @@ export default function Home() {
               </p>
             </div>
 
-            <Button onClick={copyMatch} className="gap-2">
-              <Copy size={16} />
-              Copiar
+            {/* Copy Button */}
+            <Button
+              onClick={copyMatch}
+              className={cn(
+                'gap-2',
+                hasCopied && 'bg-emerald-600 hover:bg-emerald-600',
+              )}
+            >
+              {hasCopied ? (
+                <>
+                  <CopyCheck size={16} />
+                  Copiado
+                </>
+              ) : (
+                <>
+                  <Copy size={16} />
+                  Copiar
+                </>
+              )}
             </Button>
           </div>
 

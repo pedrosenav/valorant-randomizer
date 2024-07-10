@@ -51,14 +51,19 @@ export default function Home() {
           onClick={pickRandomMap}
           className="relative flex h-96 cursor-pointer items-center justify-center overflow-hidden bg-gray-800 shadow-lg"
         >
-          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer text-xl font-semibold text-white">
-            CLIQUE PARA SORTEAR
-          </p>
-          <Shuffle
-            size={100}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white opacity-5"
-          />
+          {!randomMap && (
+            <div>
+              <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer text-xl font-semibold text-white">
+                CLIQUE PARA SORTEAR
+              </p>
+              <Shuffle
+                size={100}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white opacity-5"
+              />
+            </div>
+          )}
 
+          {/* TODO: Add animations */}
           {/* Map Title */}
           <div className="z-30 text-center">
             <h2 className="font-alt text-7xl uppercase tracking-wide text-white sm:text-9xl">

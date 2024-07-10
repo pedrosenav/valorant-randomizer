@@ -69,20 +69,13 @@ export default function Home() {
   // Helper Functions
 
   function onSubmit(values: ClassesSchema) {
-    console.log('Filtros:', values.roles)
     pickRandomAgent(values.roles)
-
-    console.log('Errors:', form.formState.errors)
   }
 
   function pickRandomAgent(roles: string[]) {
-    console.log('Roles:', roles)
-
     const filteredAgents = agents.filter((agent) => {
       return roles.includes(agent?.role?.displayName)
     })
-
-    console.log('Agentes Filtrados:', filteredAgents)
 
     const pickedAgent = pickRandomItem(filteredAgents)
 
@@ -128,6 +121,7 @@ export default function Home() {
                 background: `linear-gradient(60deg, #${randomAgent?.backgroundGradientColors[1]} -100%, transparent 50%)`,
               }}
             >
+              {/* Shuffle Button */}
               <input
                 type="submit"
                 value={'CLIQUE PARA SORTEAR'}
@@ -140,14 +134,14 @@ export default function Home() {
                 size={100}
                 className={cn(
                   'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 stroke-white opacity-5',
-                  randomAgent && 'hidden',
+                  randomAgent && 'opacity-0',
                 )}
               />
 
               {randomAgent && (
                 <>
                   <div className="absolute left-0 top-1/2 z-30 space-y-2 p-5">
-                    {/* Stripe */}
+                    {/* Stripe Top */}
                     <div
                       className="absolute h-96 w-10 -translate-y-full transition-colors duration-500"
                       style={{
@@ -165,7 +159,7 @@ export default function Home() {
                       {randomAgent?.displayName}
                     </h2>
 
-                    {/* Stripe */}
+                    {/* Stripe Bottom */}
                     <div
                       className="absolute h-96 w-10 transition-colors duration-500"
                       style={{
@@ -181,7 +175,7 @@ export default function Home() {
                     loading="eager"
                     width={1500}
                     height={1500}
-                    className="z-20 h-full scale-125 object-cover object-top sm:h-max"
+                    className="z-20 h-full w-min translate-x-1/4 translate-y-1/2 scale-[250%] object-contain sm:h-max sm:translate-x-0 sm:translate-y-0 sm:scale-125"
                   />
 
                   {/* Background Image */}
@@ -191,14 +185,14 @@ export default function Home() {
                     loading="eager"
                     width={8000}
                     height={8000}
-                    className="absolute right-0 top-1/2 z-10 h-fit w-fit -translate-y-1/2 opacity-20"
+                    className="absolute right-0 top-1/2 z-10 h-fit w-fit -translate-y-1/2 opacity-5 sm:opacity-20"
                   />
 
                   {/* Description */}
-                  <p className="absolute left-1/3 top-1/2 z-10 hidden h-full max-w-80 -translate-x-1/2 -translate-y-1/2 p-10 leading-snug tracking-widest text-white/10 lg:block">
-                    <p className="mb-5 h-1 w-3 bg-white/10"></p>
-                    &quot;{randomAgent.description}&quot;
-                  </p>
+                  <div className="absolute left-1/3 top-1/2 z-10 hidden h-full max-w-80 -translate-x-1/2 -translate-y-1/2 p-10 leading-snug tracking-widest text-white/10 lg:block">
+                    <div className="mb-5 h-1 w-3 bg-white/10" />
+                    <p>&quot;{randomAgent.description}&quot;</p>
+                  </div>
 
                   {/* Role Icon */}
                   {/* <Image
