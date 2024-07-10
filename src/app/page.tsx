@@ -103,7 +103,10 @@ export default function Home() {
   }
 
   function onSubmit(values: ClassesSchema) {
-    const players = values.names.toUpperCase().split(/\s*,\s*/) // Convert string to array
+    const players = values.names
+      .toUpperCase()
+      .split(/\s*,\s*/)
+      .filter((name) => name !== '') // Convert and filter names
 
     if (players.length < 2) {
       setWarning('MÍNIMO DE 2 JOGADORES')
