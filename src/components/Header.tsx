@@ -16,7 +16,6 @@ export default function Header() {
   ]
 
   // TODO: Create a logo
-  // TODO: Add hamburger menu
   return (
     <header className="sticky top-0 z-50 bg-rose-600 py-4">
       <Container>

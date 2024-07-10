@@ -175,7 +175,7 @@ export default function Home() {
                     loading="eager"
                     width={1500}
                     height={1500}
-                    className="z-20 h-full w-min translate-x-1/4 translate-y-1/2 scale-[250%] object-contain sm:h-max sm:translate-x-0 sm:translate-y-0 sm:scale-125"
+                    className="z-20 h-full w-min translate-x-1/4 translate-y-1/3 scale-[250%] object-contain sm:h-max sm:translate-x-0 sm:translate-y-0 sm:scale-125"
                   />
 
                   {/* Background Image */}
