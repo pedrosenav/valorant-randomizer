@@ -17,7 +17,9 @@ import Image from 'next/image'
 import type { MapAPIResponse } from '@/app/map/page'
 
 import type { AgentAPIResponse } from '@/app/agent/page'
-import { Copy, CopyCheck, RefreshCw } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
+import SpinOnClick from '@/components/SpinOnClick'
+import CopyButton from '@/components/CopyButton'
 
 export type Player = { name: string; agent: AgentAPIResponse }
 
@@ -129,7 +131,37 @@ export default function Home() {
 
     new Audio('match-found.mp3').play()
 
-    console.log('Error on Submit:', errors)
+    !errors && console.log('Error on Submit:', errors)
+  }
+
+  function randomizeSingleAgent(playerName: string) {
+    const newAttack =
+      matchSettings?.attack.map((player) => {
+        if (player.name === playerName) {
+          return {
+            name: player.name,
+            agent: pickRandomItem(agents),
+          }
+        }
+        return player
+      }) ?? []
+
+    const newDefense =
+      matchSettings?.defense.map((player) => {
+        if (player.name === playerName) {
+          return {
+            name: player.name,
+            agent: pickRandomItem(agents),
+          }
+        }
+        return player
+      }) ?? []
+
+    setMatchSettings({
+      attack: newAttack,
+      defense: newDefense,
+      map: matchSettings?.map ?? pickRandomItem(maps),
+    })
   }
 
   function randomizeMapOnly() {
@@ -158,7 +190,7 @@ export default function Home() {
             <Textarea
               className="text-md max-h-36 min-h-36 p-5 text-gray-900"
               placeholder="Escreva aqui os nomes separados por vírgula..."
-              defaultValue={sessionStorage.getItem('playerNames') ?? ''}
+              defaultValue={'pedro, mendel, jeovan, marapoia'}
               {...register('names')}
             />
           </div>
@@ -191,6 +223,7 @@ export default function Home() {
               <PlayerBanner
                 player={player}
                 key={player.name}
+                randomizeFn={randomizeSingleAgent}
                 role="attack"
                 dir="ltr"
               />
@@ -202,12 +235,14 @@ export default function Home() {
             {/* Map */}
             <div className="group space-y-2.5">
               {/* Map Options */}
-              <div className="flex w-full justify-center gap-2.5 opacity-0 group-hover:opacity-100">
-                <RefreshCw
-                  size={24}
-                  className="cursor-pointer stroke-white opacity-50 hover:opacity-100"
-                  onClick={randomizeMapOnly}
-                />
+              <div className="flex w-full justify-center gap-2.5 opacity-100 group-hover:opacity-100 sm:opacity-0">
+                <SpinOnClick>
+                  <RefreshCw
+                    size={24}
+                    className="cursor-pointer stroke-white opacity-50 hover:opacity-100"
+                    onClick={randomizeMapOnly}
+                  />
+                </SpinOnClick>
               </div>
 
               <h3 className="z-30 select-none font-alt text-7xl uppercase text-white">
@@ -219,25 +254,7 @@ export default function Home() {
             </div>
 
             {/* Copy Button */}
-            <Button
-              onClick={copyMatch}
-              className={cn(
-                'gap-2',
-                hasCopied && 'select-none bg-emerald-600 hover:bg-emerald-600',
-              )}
-            >
-              {hasCopied ? (
-                <>
-                  <CopyCheck size={16} />
-                  Copiado
-                </>
-              ) : (
-                <>
-                  <Copy size={16} />
-                  Copiar
-                </>
-              )}
-            </Button>
+            <CopyButton copyFn={copyMatch} hasCopied={hasCopied} />
           </div>
 
           {/* Defending Team */}
@@ -248,6 +265,7 @@ export default function Home() {
               <PlayerBanner
                 player={player}
                 key={player.name}
+                randomizeFn={randomizeSingleAgent}
                 role="defense"
                 dir="rtl"
               />
