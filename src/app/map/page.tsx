@@ -44,7 +44,7 @@ export default function Home() {
     <div>
       <Container className="space-y-10 py-10">
         {/* Título */}
-        <h1 className="text-center font-alt text-8xl tracking-wide">MAPA</h1>
+        <h1 className="text-center font-alt text-6xl tracking-wide">MAPA</h1>
 
         {/* Mapa */}
         <Card

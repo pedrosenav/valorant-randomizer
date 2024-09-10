@@ -14,16 +14,25 @@ export default function PlayerBanner({ role, dir, player }: PlayerBannerProps) {
   return (
     <div
       className={cn(
-        'flex w-full max-w-96 items-center overflow-hidden rounded border border-gray-500 bg-gray-900/80 shadow-lg backdrop-blur-sm',
+        'group flex w-full max-w-96 items-center rounded border border-gray-500 bg-gray-900/80 shadow-lg backdrop-blur-sm',
         dir === 'rtl' && 'flex-row-reverse text-right',
       )}
     >
-      <div className="group relative">
-        {/* TODO: Adicionar a função de troca de agente */}
-        {/* <RefreshCw
-          size={50}
-          className="absolute left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 stroke-white opacity-0 transition-all group-hover:opacity-100"
-        /> */}
+      {/* Options */}
+      {/* <div
+        className={cn(
+          'absolute z-50 -translate-x-full space-y-2.5 p-2.5 opacity-0 group-hover:opacity-100',
+          dir === 'rtl' && 'translate-x-full',
+        )}
+      >
+        <RefreshCw
+          size={24}
+          className="cursor-pointer stroke-white opacity-50 hover:opacity-100"
+        />
+      </div>
+ */}
+      {/* Agent Icon */}
+      <div className="relative">
         <Image
           src={player.agent.displayIcon}
           alt={`${player.agent.displayName} Icon`}
@@ -37,6 +46,7 @@ export default function PlayerBanner({ role, dir, player }: PlayerBannerProps) {
         />
       </div>
 
+      {/* Player and Agent Name */}
       <div className="overflow-hidden px-5">
         <p className="text-2xl font-semibold text-white">{player.name}</p>
         <p className="uppercase tracking-wide text-gray-500">

@@ -99,7 +99,7 @@ export default function Home() {
     <div>
       <Container className="space-y-10 py-10">
         {/* Title */}
-        <h1 className="text-center font-alt text-8xl tracking-wide">AGENTE</h1>
+        <h1 className="text-center font-alt text-6xl tracking-wide">AGENTE</h1>
 
         {/* Randomizer */}
         <FormProvider {...form}>
@@ -210,7 +210,7 @@ export default function Home() {
         </FormProvider>
 
         <div className="flex gap-2.5">
-          {/* Historic */}
+          {/* History */}
           <Card className="h-24 w-full bg-gray-800 p-2.5 shadow-lg">
             <ScrollArea>
               <div className="relative flex flex-row-reverse justify-end gap-5 p-2.5 pb-5">

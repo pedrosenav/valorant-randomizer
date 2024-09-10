@@ -17,7 +17,7 @@ import Image from 'next/image'
 import type { MapAPIResponse } from '@/app/map/page'
 
 import type { AgentAPIResponse } from '@/app/agent/page'
-import { Copy, CopyCheck } from 'lucide-react'
+import { Copy, CopyCheck, RefreshCw } from 'lucide-react'
 
 export type Player = { name: string; agent: AgentAPIResponse }
 
@@ -95,7 +95,7 @@ export default function Home() {
     setTimeout(() => setHasCopied(false), 1500)
   }
 
-  function assignAgents(players: string[]) {
+  function assignAgents(players: string[]): Player[] {
     return players.map((player) => ({
       name: player,
       agent: pickRandomItem(agents),
@@ -112,6 +112,7 @@ export default function Home() {
       setWarning('MÍNIMO DE 2 JOGADORES')
       return
     }
+
     setWarning(null)
 
     const shuffledPlayers = shuffleArray(players) // Shuffle the names
@@ -128,7 +129,15 @@ export default function Home() {
 
     new Audio('match-found.mp3').play()
 
-    console.log('Errors on Submit:', errors)
+    console.log('Error on Submit:', errors)
+  }
+
+  function randomizeMapOnly() {
+    setMatchSettings({
+      attack: matchSettings?.attack ?? [],
+      defense: matchSettings?.defense ?? [],
+      map: pickRandomItem(maps),
+    })
   }
 
   // JSX Return
@@ -136,7 +145,7 @@ export default function Home() {
     <div>
       <Container className="space-y-10 py-10">
         {/* Title */}
-        <h1 className="text-center font-alt text-8xl tracking-wide">PARTIDA</h1>
+        <h1 className="text-center font-alt text-6xl tracking-wide">PARTIDA</h1>
 
         {/* Form */}
         <form
@@ -149,6 +158,7 @@ export default function Home() {
             <Textarea
               className="text-md max-h-36 min-h-36 p-5 text-gray-900"
               placeholder="Escreva aqui os nomes separados por vírgula..."
+              defaultValue={sessionStorage.getItem('playerNames') ?? ''}
               {...register('names')}
             />
           </div>
@@ -190,11 +200,20 @@ export default function Home() {
           {/* Central */}
           <div className="z-30 order-1 flex min-h-64 flex-1 flex-col items-center justify-center gap-5 text-center lg:order-none">
             {/* Map */}
-            <div className="space-y-2.5">
-              <h3 className="z-30 font-alt text-7xl uppercase text-white">
+            <div className="group space-y-2.5">
+              {/* Map Options */}
+              <div className="flex w-full justify-center gap-2.5 opacity-0 group-hover:opacity-100">
+                <RefreshCw
+                  size={24}
+                  className="cursor-pointer stroke-white opacity-50 hover:opacity-100"
+                  onClick={randomizeMapOnly}
+                />
+              </div>
+
+              <h3 className="z-30 select-none font-alt text-7xl uppercase text-white">
                 {matchSettings?.map.displayName}
               </h3>
-              <p className="z-30 text-sm tracking-widest text-gray-400">
+              <p className="z-30 select-none text-sm tracking-widest text-gray-400">
                 {matchSettings?.map.coordinates}
               </p>
             </div>
@@ -204,7 +223,7 @@ export default function Home() {
               onClick={copyMatch}
               className={cn(
                 'gap-2',
-                hasCopied && 'bg-emerald-600 hover:bg-emerald-600',
+                hasCopied && 'select-none bg-emerald-600 hover:bg-emerald-600',
               )}
             >
               {hasCopied ? (

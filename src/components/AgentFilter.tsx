@@ -11,7 +11,7 @@ export default function AgentFilter({ role }: AgentFilterProps) {
   return (
     <label
       htmlFor={role.displayName}
-      className="flex min-w-40 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors hover:bg-gray-800 has-[:checked]:bg-emerald-600"
+      className="flex min-w-40 flex-1 cursor-pointer select-none items-center justify-center gap-2.5 rounded px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors hover:bg-gray-800 has-[:checked]:bg-emerald-600"
     >
       <input
         className="peer hidden"
